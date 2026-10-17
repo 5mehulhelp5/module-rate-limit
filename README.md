@@ -2,7 +2,7 @@
 
 Works with Magento 2.4.7+ · PHP 8.1–8.5 · Redis or Valkey
 
-[![License](https://badgen.net/github/license/commercekings/module-rate-limit)](LICENSE) [![Release](https://badgen.net/github/release/commercekings/module-rate-limit)](https://github.com/commercekings/module-rate-limit/releases) [![Checks](https://badgen.net/github/checks/commercekings/module-rate-limit/main?label=checks)](https://github.com/commercekings/module-rate-limit/actions)
+[![License](https://badgen.net/github/license/commercekings/module-rate-limit)](LICENSE) [![Release](https://badgen.net/github/release/commercekings/module-rate-limit)](https://github.com/commercekings/module-rate-limit/releases) [![Checks](https://github.com/commercekings/module-rate-limit/actions/workflows/checks.yml/badge.svg?branch=main)](https://github.com/commercekings/module-rate-limit/actions/workflows/checks.yml)
 
 **Stop scripts from hammering your storefront endpoints – with Magento's own rate limiting, set up in the admin.**
 
