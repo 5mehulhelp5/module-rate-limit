@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="commercekings_rate_limit" translate="label" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Rate limiting</label>
+            <tab>commercekings</tab>
+            <resource>CommerceKings_RateLimit::config</resource>
+            <group id="general" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>Rate limiting</label>
+                <fieldset_css>commercekings-config-section</fieldset_css>
+                <comment><![CDATA[Limits storefront endpoints with Magento's backpressure and answers HTTP 429 above the limit. Needs the backpressure logger in app/etc/env.php (Redis or Valkey). Guests are counted per IP address: set trusted proxies or have your proxy replace X-Forwarded-For, or the limit can be bypassed. A rule in your web server, proxy or CDN stays the first line of defence.]]></comment>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="rules" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Limits</label>
+                    <comment>Requests per guest IP address and per signed-in customer. Endpoints without a row are not limited. Other modules can add their endpoints to this list.</comment>
+                    <frontend_model>CommerceKings\RateLimit\Block\Adminhtml\Form\Field\Rules</frontend_model>
+                    <backend_model>CommerceKings\RateLimit\Model\Config\Backend\Rules</backend_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="blocked_ips" translate="label comment" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Blocked IP addresses</label>
+                    <comment>Always answered with HTTP 429 on the endpoints in this list, also without the backpressure logger. One IPv4/IPv6 address or CIDR range per line, e.g. 203.0.113.7 or 198.51.100.0/24. The address is the one Magento sees as the client (see the note above).</comment>
+                    <backend_model>CommerceKings\RateLimit\Model\Config\Backend\IpList</backend_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="status" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Status</label>
+                    <frontend_model>CommerceKings\RateLimit\Block\Adminhtml\Status</frontend_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

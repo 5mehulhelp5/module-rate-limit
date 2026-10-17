@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!--
+        The open endpoint registry. Classes are plain strings: an endpoint of a module that is not installed is skipped,
+        so this package depends on none of them. Other modules add theirs the same way (docs/endpoints.md).
+    -->
+    <type name="CommerceKings\RateLimit\Model\EndpointRegistry">
+        <arguments>
+            <argument name="definitions" xsi:type="array">
+                <item name="notification_subscribe" xsi:type="array">
+                    <item name="label" xsi:type="string">Notifications: subscribe</item>
+                    <item name="service" xsi:type="string">CommerceKings\Notification\Api\SubscriptionManagementInterface</item>
+                    <item name="methods" xsi:type="array">
+                        <item name="guest" xsi:type="string">subscribeGuest</item>
+                        <item name="customer" xsi:type="string">subscribeCustomer</item>
+                    </item>
+                </item>
+                <item name="consent_grant" xsi:type="array">
+                    <item name="label" xsi:type="string">Consent: record a choice</item>
+                    <item name="controller" xsi:type="string">CommerceKings\Consent\Controller\Grant\Index</item>
+                </item>
+                <item name="consent_withdraw" xsi:type="array">
+                    <item name="label" xsi:type="string">Consent: record a withdrawal</item>
+                    <item name="controller" xsi:type="string">CommerceKings\Consent\Controller\Withdraw\Index</item>
+                </item>
+                <item name="consent_optout" xsi:type="array">
+                    <item name="label" xsi:type="string">Consent: email withdrawal link</item>
+                    <item name="controller" xsi:type="string">CommerceKings\Consent\Controller\Optout\Index</item>
+                </item>
+                <item name="abandoned_cart_restore" xsi:type="array">
+                    <item name="label" xsi:type="string">Abandoned cart: restore link</item>
+                    <item name="controller" xsi:type="string">CommerceKings\AbandonedCart\Controller\Cart\Restore</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- registered endpoints in Magento's backpressure, for storefront controllers and for REST -->
+    <type name="Magento\Framework\App\Request\Backpressure\CompositeRequestTypeExtractor">
+        <arguments>
+            <argument name="extractors" xsi:type="array">
+                <item name="commercekings_rate_limit" xsi:type="object">CommerceKings\RateLimit\Model\Backpressure\ControllerRequestTypeExtractor</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\Webapi\Backpressure\CompositeRequestTypeExtractor">
+        <arguments>
+            <argument name="extractors" xsi:type="array">
+                <item name="commercekings_rate_limit" xsi:type="object">CommerceKings\RateLimit\Model\Backpressure\WebapiRequestTypeExtractor</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\App\Backpressure\SlidingWindow\LimitConfigManagerInterface">
+        <plugin name="commercekings_rate_limit" type="CommerceKings\RateLimit\Plugin\LimitConfigPlugin"/>
+    </type>
+    <type name="Magento\Framework\App\BackpressureEnforcerInterface">
+        <plugin name="commercekings_rate_limit_blocked_ip" type="CommerceKings\RateLimit\Plugin\BlockedIpPlugin"/>
+    </type>
+    <type name="Magento\Framework\App\Request\BackpressureValidator">
+        <plugin name="commercekings_rate_limit_429" type="CommerceKings\RateLimit\Plugin\TooManyRequestsPlugin"/>
+    </type>
+</config>
