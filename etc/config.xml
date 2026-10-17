@@ -5,7 +5,7 @@
             <general>
                 <enabled>0</enabled>
                 <!-- suggested limits for the endpoints of CommerceKings modules; rows of modules that are not installed are ignored -->
-                <rules>{"notification_subscribe":{"endpoint":"notification_subscribe","guest_limit":"10","limit":"10","period":"60"},"consent_grant":{"endpoint":"consent_grant","guest_limit":"30","limit":"30","period":"60"},"consent_withdraw":{"endpoint":"consent_withdraw","guest_limit":"30","limit":"30","period":"60"},"consent_optout":{"endpoint":"consent_optout","guest_limit":"10","limit":"10","period":"60"},"abandoned_cart_restore":{"endpoint":"abandoned_cart_restore","guest_limit":"10","limit":"10","period":"60"}}</rules>
+                <rules>{"notification_subscribe":{"endpoint":"notification_subscribe","guest_limit":"10","limit":"10","period":"60"},"consent_grant":{"endpoint":"consent_grant","guest_limit":"30","limit":"30","period":"60"},"consent_withdraw":{"endpoint":"consent_withdraw","guest_limit":"30","limit":"30","period":"60"},"abandoned_cart_restore":{"endpoint":"abandoned_cart_restore","guest_limit":"10","limit":"10","period":"60"}}</rules>
                 <blocked_ips/>
             </general>
         </commercekings_rate_limit>
