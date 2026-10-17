@@ -6,7 +6,7 @@ Works with Magento 2.4.7+ · PHP 8.1–8.5 · Redis or Valkey
 
 **Stop scripts from hammering your storefront endpoints – with Magento's own rate limiting, set up in the admin.**
 
-- **Built on Magento.** Uses Magento's backpressure (the mechanism behind its order and coupon rate limits) – no
+- **Built on Magento.** Uses Magento's backpressure (the mechanism behind its rate limit for placing orders) – no
   new counters, no new tables.
 - **Clean 429.** Limited requests get `HTTP 429 Too Many Requests` – for REST and for storefront controllers, where
   Magento alone would answer with an error page.
