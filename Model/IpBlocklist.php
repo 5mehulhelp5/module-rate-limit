@@ -3,15 +3,23 @@ declare(strict_types=1);
 
 namespace CommerceKings\RateLimit\Model;
 
-/** Matching of the admin "Blocked IP addresses": IPv4/IPv6 addresses or CIDR ranges, one per line. */
+/**
+ * Matching of the admin "Blocked IP addresses": IPv4/IPv6 addresses or CIDR ranges, one per line.
+ *
+ * IPv4 is compared as IPv4-mapped IPv6 (::ffff:203.0.113.7), so a client that a dual-stack server reports in mapped
+ * form matches an IPv4 entry, and the other way round.
+ */
 class IpBlocklist
 {
+    private const IPV4_MAPPED_PREFIX = "\0\0\0\0\0\0\0\0\0\0\xff\xff";
+
     public function contains(string $list, string $ip): bool
     {
         $address = $this->binary(trim($ip));
         if ($address === null) {
             return false;
         }
+        $address = $this->toIpv6($address);
         foreach ($this->parse($list) as $entry) {
             if ($this->matches($address, $entry)) {
                 return true;
@@ -46,6 +54,12 @@ class IpBlocklist
         return filter_var($ip, FILTER_VALIDATE_IP) === false ? null : (inet_pton($ip) ?: null);
     }
 
+    /** IPv4 (4 bytes) as IPv4-mapped IPv6 (16 bytes); IPv6 unchanged. */
+    private function toIpv6(string $address): string
+    {
+        return strlen($address) === 4 ? self::IPV4_MAPPED_PREFIX . $address : $address;
+    }
+
     private function matches(string $address, string $entry): bool
     {
         if (!$this->isValidEntry($entry)) {
@@ -53,10 +67,11 @@ class IpBlocklist
         }
         [$ip, $bits] = array_pad(explode('/', $entry, 2), 2, null);
         $network = (string)$this->binary((string)$ip);
-        if (strlen($network) !== strlen($address)) {
-            return false; // IPv4 entry, IPv6 client or the other way round
-        }
         $bits = $bits === null ? strlen($network) * 8 : (int)$bits;
+        if (strlen($network) === 4) {
+            $bits += 96; // the IPv4 prefix length, counted after the 96-bit mapped prefix
+        }
+        $network = $this->toIpv6($network);
         $bytes = intdiv($bits, 8);
         if (substr($address, 0, $bytes) !== substr($network, 0, $bytes)) {
             return false;

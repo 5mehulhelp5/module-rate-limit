@@ -24,6 +24,11 @@ class IpBlocklistTest extends TestCase
             'outside IPv6 /32' => ['2001:db9::1', false],
             'exact IPv6' => ['::1', true],
             'IPv4 client, IPv6 entries only' => ['0.0.0.1', false],
+            'IPv4-mapped client, exact IPv4 entry' => ['::ffff:203.0.113.7', true],
+            'IPv4-mapped client inside IPv4 /24' => ['::ffff:198.51.100.254', true],
+            'IPv4-mapped client outside IPv4 /24' => ['::ffff:198.51.101.1', false],
+            'IPv4-mapped client, upper case' => ['::FFFF:203.0.113.7', true],
+            'IPv4-mapped client, hex form' => ['::ffff:cb00:7107', true],
             'surrounding spaces' => [' 203.0.113.7 ', true],
             'not an address' => ['unknown', false],
             'empty' => ['', false],
@@ -34,6 +39,16 @@ class IpBlocklistTest extends TestCase
     public function testMatchesAddressesAndRanges(string $ip, bool $blocked): void
     {
         $this->assertSame($blocked, (new IpBlocklist())->contains(self::LIST, $ip));
+    }
+
+    public function testMappedEntriesMatchIpv4Clients(): void
+    {
+        $list = "::ffff:192.0.2.9\n::ffff:192.0.2.128/121";
+        $blocklist = new IpBlocklist();
+        $this->assertTrue($blocklist->contains($list, '192.0.2.9'));
+        $this->assertTrue($blocklist->contains($list, '192.0.2.200'));
+        $this->assertFalse($blocklist->contains($list, '192.0.2.127'));
+        $this->assertFalse($blocklist->contains($list, '::192.0.2.9'), 'IPv4-compatible is not IPv4-mapped');
     }
 
     public function testEmptyListBlocksNobody(): void
