@@ -34,6 +34,8 @@ use PHPUnit\Framework\TestCase;
 
 class PluginsTest extends TestCase
 {
+    private array $headers = [];
+    private ?int $rulePeriod = 60;
     private function registry(): EndpointRegistry
     {
         return new EndpointRegistry([
@@ -140,9 +142,15 @@ class PluginsTest extends TestCase
         $result = $this->createStub(JsonResult::class);
         $result->method('setHttpResponseCode')->willReturnSelf();
         $result->method('setData')->willReturnSelf();
+        $result->method('setHeader')->willReturnCallback(function ($name, $value) use ($result) {
+            $this->headers[$name] = $value;
+            return $result;
+        });
         $factory = $this->createStub(JsonFactory::class);
         $factory->method('create')->willReturn($result);
-        (new TooManyRequestsPlugin($this->registry(), $factory))->aroundValidate(
+        $config = $this->createStub(\CommerceKings\RateLimit\Model\Config::class);
+        $config->method('getRule')->willReturnCallback(fn ($id) => $this->rulePeriod === null ? null : ['period' => $this->rulePeriod]);
+        (new TooManyRequestsPlugin($this->registry(), $factory, $config))->aroundValidate(
             $this->createStub(BackpressureValidator::class),
             fn () => throw $thrown,
             $this->createStub(RequestInterface::class),
@@ -158,6 +166,20 @@ class PluginsTest extends TestCase
             $this->fail('No InvalidRequestException');
         } catch (InvalidRequestException $exception) {
             $this->assertInstanceOf(JsonResult::class, $exception->getReplaceResult());
+        }
+        $this->assertSame('60', $this->headers['Retry-After'], 'the rule\'s period in seconds');
+    }
+
+    public function testRetryAfterFollowsTheRulePeriodOrAMinute(): void
+    {
+        $exceeded = new LocalizedException(__('Too Many Requests'), new BackpressureExceededException());
+        foreach ([[3600, '3600'], [null, '60']] as [$period, $expected]) {
+            $this->rulePeriod = $period;
+            try {
+                $this->validate(new LimitedAction(), $exceeded);
+            } catch (InvalidRequestException) {
+            }
+            $this->assertSame($expected, $this->headers['Retry-After']);
         }
     }
 
@@ -183,7 +205,8 @@ class PluginsTest extends TestCase
     public function testAllowedRequestsPassThrough(): void
     {
         $called = false;
-        (new TooManyRequestsPlugin($this->registry(), $this->createStub(JsonFactory::class)))->aroundValidate(
+        (new TooManyRequestsPlugin($this->registry(), $this->createStub(JsonFactory::class),
+            $this->createStub(\CommerceKings\RateLimit\Model\Config::class)))->aroundValidate(
             $this->createStub(BackpressureValidator::class),
             function () use (&$called) {
                 $called = true;

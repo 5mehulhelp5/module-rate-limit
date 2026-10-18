@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- 429 answers say when to try again (`Retry-After`: the endpoint's period, a minute without a rule).
+- *Status* also warns when Magento takes the visitor's address from a forwarded header – only a proxy may set it.
 - An IPv6 guest is counted per /64 network on the registered endpoints (Magento's own request types keep
   Magento's identity).
 - Rate limiting on Magento's backpressure for storefront controllers and REST services, configured per endpoint

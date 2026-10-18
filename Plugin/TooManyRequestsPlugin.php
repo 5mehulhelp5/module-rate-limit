@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace CommerceKings\RateLimit\Plugin;
 
+use CommerceKings\RateLimit\Model\Config;
 use CommerceKings\RateLimit\Model\EndpointRegistry;
 use Magento\Framework\App\ActionInterface;
 use Magento\Framework\App\Backpressure\BackpressureExceededException;
@@ -21,7 +22,8 @@ class TooManyRequestsPlugin
 {
     public function __construct(
         private readonly EndpointRegistry $registry,
-        private readonly JsonFactory $jsonFactory
+        private readonly JsonFactory $jsonFactory,
+        private readonly Config $config
     ) {
     }
 
@@ -35,13 +37,15 @@ class TooManyRequestsPlugin
         try {
             $proceed($request, $action);
         } catch (LocalizedException $exception) {
-            if (!$exception->getPrevious() instanceof BackpressureExceededException
-                || $this->registry->getIdForController($action) === null
-            ) {
+            $endpoint = $this->registry->getIdForController($action);
+            if (!$exception->getPrevious() instanceof BackpressureExceededException || $endpoint === null) {
                 throw $exception;
             }
+            // when to try again: the endpoint's period in seconds (a minute without a rule, e.g. a blocked address)
+            $retry = (int)($this->config->getRule($endpoint)['period'] ?? 60);
             $result = $this->jsonFactory->create()
                 ->setHttpResponseCode(429)
+                ->setHeader('Retry-After', (string)max(1, $retry), true)
                 ->setData(['message' => (string)__('Too Many Requests')]);
             throw new InvalidRequestException($result);
         }

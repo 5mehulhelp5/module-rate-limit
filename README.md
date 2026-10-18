@@ -74,8 +74,8 @@ one.
 - Add the backpressure logger to `app/etc/env.php` – without it Magento cannot count and only the blocklist works
   ([how](docs/operations.md#counter-store)).
 - Make sure Magento sees the shopper's IP address, not your proxy's – or guests share one counter, or a script
-  fakes a new address per request. *Status* warns when Magento sees a private or local address
-  ([how](docs/operations.md#client-ip-address)).
+  fakes a new address per request. *Status* warns when Magento sees a private or local address,
+  and when it takes the address from a forwarded header ([how](docs/operations.md#client-ip-address)).
 - Keep a rule in your web server, proxy or CDN as the first line of defense; this module is the second.
 
 ## Extending

@@ -36,6 +36,14 @@ class Status extends Field
             )
             : __('No backpressure logger in app/etc/env.php: limits are off, blocked IP addresses still apply.');
         $html = '<div class="control-value">' . $this->escapeHtml((string)$message) . '</div>';
+        $raw = (string)$this->getRequest()->getServer('REMOTE_ADDR');
+        if (self::isForwarded((string)$this->remoteAddress->getRemoteAddress(), $raw)) {
+            $html .= '<div class="message message-warning">' . $this->escapeHtml((string)__(
+                'Magento takes the visitor\'s address from a forwarded header. Make sure only your proxy can set it'
+                . ' (trusted proxies in Magento\'s RemoteAddress), or a script can fake a new address per request and'
+                . ' get around the limits and the blocklist.'
+            )) . '</div>';
+        }
         if (self::isProxyAddress((string)$this->remoteAddress->getRemoteAddress())) {
             $html .= '<div class="message message-warning">' . $this->escapeHtml((string)__(
                 'Magento sees this request from %1, a private or local address – usually your proxy or load balancer.'
@@ -45,6 +53,12 @@ class Status extends Field
             )) . '</div>';
         }
         return $html;
+    }
+
+    /** Magento resolved another address than the connection's: it reads a forwarded header (alternativeHeaders). */
+    public static function isForwarded(string $resolved, string $connection): bool
+    {
+        return $resolved !== '' && $connection !== '' && $resolved !== $connection;
     }
 
     /** A private, loopback or reserved address: what Magento sees when a proxy does not forward the client's. */

@@ -23,6 +23,13 @@ class StatusTest extends TestCase
         }
     }
 
+    public function testAForwardedHeaderIsNoticed(): void
+    {
+        $this->assertTrue(Status::isForwarded('203.0.113.7', '10.0.0.2'), 'taken from X-Forwarded-For');
+        $this->assertFalse(Status::isForwarded('10.0.0.2', '10.0.0.2'), 'the connection address');
+        $this->assertFalse(Status::isForwarded('', '10.0.0.2'));
+    }
+
     /** Stopping emails is never limited by default: a refused "no" would keep emails going. */
     public function testDefaultRulesNeverLimitStoppingEmails(): void
     {
