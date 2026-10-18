@@ -27,9 +27,9 @@
                     <item name="label" xsi:type="string">Consent: email withdrawal link</item>
                     <item name="controller" xsi:type="string">CommerceKings\Consent\Controller\Optout\Index</item>
                 </item>
-                <item name="notification_block" xsi:type="array">
+                <item name="notification_stop" xsi:type="array">
                     <item name="label" xsi:type="string">Notifications: Do not contact page</item>
-                    <item name="controller" xsi:type="string">CommerceKings\Notification\Controller\Block\Index</item>
+                    <item name="controller" xsi:type="string">CommerceKings\Notification\Controller\Stop\Index</item>
                 </item>
                 <item name="abandoned_cart_restore" xsi:type="array">
                     <item name="label" xsi:type="string">Abandoned cart: restore link</item>

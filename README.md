@@ -65,7 +65,7 @@ Suggested limits, filled in for the CommerceKings endpoints that are installed:
 
 Stopping emails has no suggested limit – a refused "no" would keep emails going: the cookie banner's withdrawal
 (`/ckconsent/withdraw`), the email withdrawal link (`/ckconsent/optout`) and the Do not contact page
-(`/cknotification/block`). Mail providers also send one-click unsubscribes from shared servers (RFC 8058), so a
+(`/cknotification/stop`). Mail providers also send one-click unsubscribes from shared servers (RFC 8058), so a
 limit per IP address could drop a shopper's unsubscribe. They are listed in the admin; add a rule only if you need
 one.
 

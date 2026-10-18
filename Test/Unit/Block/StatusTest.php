@@ -36,7 +36,7 @@ class StatusTest extends TestCase
         $config = (string)file_get_contents(__DIR__ . '/../../../etc/config.xml');
         preg_match('#<rules>(.*)</rules>#s', $config, $match);
         $rules = json_decode($match[1], true, 512, JSON_THROW_ON_ERROR);
-        foreach (['consent_withdraw', 'consent_optout', 'notification_block'] as $endpoint) {
+        foreach (['consent_withdraw', 'consent_optout', 'notification_stop'] as $endpoint) {
             $this->assertArrayNotHasKey($endpoint, $rules, $endpoint);
         }
         $this->assertArrayHasKey('notification_subscribe', $rules, 'sign-ups stay limited');
