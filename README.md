@@ -98,4 +98,6 @@ table and gets the limits, the blocklist and the 429. How, and how to handle 429
 [Operations](docs/operations.md) · [Endpoints for developers](docs/endpoints.md) ·
 [Compatibility](COMPATIBILITY.md) · [Changes](CHANGELOG.md)
 
+---
+
 **Need help installing or setting it up?** **[Get a quote →](https://commercekings.net)**
