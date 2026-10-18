@@ -60,6 +60,7 @@ Suggested limits, filled in for the CommerceKings endpoints that are installed:
 | Endpoint | Per guest IP | Per customer | Per |
 |---|---|---|---|
 | Notifications: subscribe (`POST /V1/ck-notification/subscriptions`, `/mine`) | 10 | 10 | minute |
+| Notifications: consent for an address (`POST /V1/ck-notification/address-consents`, `/mine`) | 10 | 10 | minute |
 | Consent: record a choice (`/ckconsent/grant`) | 30 | 30 | minute |
 | Abandoned cart: restore link (`/cartreminder/cart/restore`) | 10 | 10 | minute |
 

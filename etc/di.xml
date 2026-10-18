@@ -15,6 +15,14 @@
                         <item name="customer" xsi:type="string">subscribeCustomer</item>
                     </item>
                 </item>
+                <item name="notification_address_consent" xsi:type="array">
+                    <item name="label" xsi:type="string">Notifications: consent for an address</item>
+                    <item name="service" xsi:type="string">CommerceKings\Notification\Api\AddressConsentManagementInterface</item>
+                    <item name="methods" xsi:type="array">
+                        <item name="guest" xsi:type="string">recordGuest</item>
+                        <item name="customer" xsi:type="string">recordCustomer</item>
+                    </item>
+                </item>
                 <item name="consent_grant" xsi:type="array">
                     <item name="label" xsi:type="string">Consent: record a choice</item>
                     <item name="controller" xsi:type="string">CommerceKings\Consent\Controller\Grant\Index</item>

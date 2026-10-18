@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Notification's address consent endpoint (`notification_address_consent`, guest and `/mine`) is listed, with a
+  suggested limit of 10 per minute like sign-ups.
 - `EndpointRegistry`'s `definitions` di.xml argument is `@api`: a stable way for any module to register its endpoints.
 - 429 answers say when to try again (`Retry-After`: the endpoint's period, a minute without a rule).
 - *Status* also warns when Magento takes the visitor's address from a forwarded header – only a proxy may set it.
