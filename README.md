@@ -10,7 +10,8 @@ Works with Magento 2.4.7+ · PHP 8.2–8.5 · Redis or Valkey
   new counters, no new tables.
 - **Clean 429.** Limited requests get `HTTP 429 Too Many Requests` – for REST and for storefront controllers, where
   Magento alone would answer with an error page.
-- **Your limits.** Per endpoint: requests per guest IP, per signed-in customer, per minute, hour or day.
+- **Your limits.** Per endpoint: requests per guest IP, per signed-in customer, per minute, hour or day. An IPv6
+  guest counts per /64 network, so rotating addresses inside it does not help.
 - **Blocklist.** IP addresses and CIDR ranges that get 429 while rate limiting is enabled – also without Redis.
 - **Open.** Any module can add its endpoints in its `di.xml` ([how](docs/endpoints.md)).
 
@@ -49,7 +50,7 @@ returns every endpoint to Magento's normal handling; its saved settings are then
 
 | Field | Default |
 |---|---|
-| Enabled | No |
+| Enabled | Yes – without the counter store nothing is counted, only the blocklist applies |
 | Limits | One row per endpoint – see below; endpoints without a row are not limited |
 | Blocked IP addresses | empty |
 | Status | Whether Magento can count requests (the backpressure logger) |

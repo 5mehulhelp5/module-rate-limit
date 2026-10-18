@@ -2,9 +2,12 @@
 
 ## Unreleased
 
+- An IPv6 guest is counted per /64 network on the registered endpoints (Magento's own request types keep
+  Magento's identity).
 - Rate limiting on Magento's backpressure for storefront controllers and REST services, configured per endpoint
   under **Stores > Configuration > CommerceKings > Rate limiting**: requests per guest IP, per signed-in customer,
-  per minute, hour or day. Off by default.
+  per minute, hour or day. On by default with the suggested limits; without the counter store nothing is counted
+  and only the blocklist applies.
 - Open endpoint registry in `di.xml`; ships entries for the CommerceKings notification, consent and abandoned cart
   endpoints, matched by class name so none of those modules is required.
 - Suggested limits for the CommerceKings endpoints, except the email withdrawal link: one-click unsubscribes come from

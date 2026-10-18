@@ -53,6 +53,13 @@
             </argument>
         </arguments>
     </type>
+    <!-- an IPv6 guest is counted by its /64 on the registered endpoints, pages and REST -->
+    <type name="Magento\Framework\App\Request\Backpressure\ContextFactory">
+        <plugin name="commercekings_rate_limit_ipv6" type="CommerceKings\RateLimit\Plugin\Ipv6NetworkIdentityPlugin"/>
+    </type>
+    <type name="Magento\Framework\Webapi\Backpressure\BackpressureContextFactory">
+        <plugin name="commercekings_rate_limit_ipv6" type="CommerceKings\RateLimit\Plugin\Ipv6NetworkIdentityPlugin"/>
+    </type>
     <type name="Magento\Framework\App\Backpressure\SlidingWindow\LimitConfigManagerInterface">
         <plugin name="commercekings_rate_limit" type="CommerceKings\RateLimit\Plugin\LimitConfigPlugin"/>
     </type>
