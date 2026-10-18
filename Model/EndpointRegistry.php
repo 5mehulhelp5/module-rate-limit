@@ -9,6 +9,8 @@ namespace CommerceKings\RateLimit\Model;
  * An endpoint is either a storefront controller (`controller`: the action class, subclasses match too) or a REST
  * service (`service`: the interface named in webapi.xml, `methods`: its methods). Entries whose class does not exist
  * (the module is not installed) or that are malformed are left out, so the registry never depends on a module.
+ *
+ * @api the "definitions" di.xml argument is a stable extension point
  */
 class EndpointRegistry
 {
@@ -18,7 +20,7 @@ class EndpointRegistry
     /** @var array<string, array{label: string, controller?: string, service?: string, methods?: string[]}>|null */
     private ?array $endpoints = null;
 
-    /** @param array<string, mixed> $definitions di.xml `endpoints`, keyed by endpoint id */
+    /** @param array<string, mixed> $definitions di.xml `definitions`, keyed by endpoint id */
     public function __construct(
         private readonly array $definitions = []
     ) {
