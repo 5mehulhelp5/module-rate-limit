@@ -2,8 +2,6 @@
 
 ## Unreleased
 
-First release. Features:
-
 - Rate limiting on Magento's backpressure for storefront controllers and REST services, configured per endpoint
   under **Stores > Configuration > CommerceKings > Rate limiting**: requests per guest IP, per signed-in customer,
   per minute, hour or day. Off by default.

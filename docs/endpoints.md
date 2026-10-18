@@ -1,5 +1,7 @@
 # Endpoints for developers
 
+Adding endpoints to `commercekings/module-rate-limit`. Start with the [README](../README.md).
+
 The endpoint registry is open: a module adds its own endpoints in its `etc/di.xml`, and they appear in the admin
 table under **Stores > Configuration > CommerceKings > Rate limiting > Limits**. They then get the same limits per
 guest IP and per customer, the IP blocklist and the HTTP 429 answer as the CommerceKings endpoints.

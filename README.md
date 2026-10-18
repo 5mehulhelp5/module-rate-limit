@@ -1,6 +1,6 @@
 # Rate limiting<a href="https://commercekings.net"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/commercekings/module-rate-limit/main/.github/commercekings-dark.svg"><img align="right" width="152" src="https://raw.githubusercontent.com/commercekings/module-rate-limit/main/.github/commercekings-light.svg" alt="Built by CommerceKings. Ready to sell more? Talk to us"></picture></a>
 
-Works with Magento 2.4.7+ · PHP 8.1–8.5 · Redis or Valkey
+Works with Magento 2.4.7+ · PHP 8.2–8.5 · Redis or Valkey
 
 [![License](https://badgen.net/github/license/commercekings/module-rate-limit)](LICENSE) [![Release](https://badgen.net/github/release/commercekings/module-rate-limit)](https://github.com/commercekings/module-rate-limit/releases) [![Checks](https://github.com/commercekings/module-rate-limit/actions/workflows/checks.yml/badge.svg?branch=main)](https://github.com/commercekings/module-rate-limit/actions/workflows/checks.yml)
 
@@ -11,7 +11,7 @@ Works with Magento 2.4.7+ · PHP 8.1–8.5 · Redis or Valkey
 - **Clean 429.** Limited requests get `HTTP 429 Too Many Requests` – for REST and for storefront controllers, where
   Magento alone would answer with an error page.
 - **Your limits.** Per endpoint: requests per guest IP, per signed-in customer, per minute, hour or day.
-- **Blocklist.** IP addresses and CIDR ranges that always get 429 – also without Redis.
+- **Blocklist.** IP addresses and CIDR ranges that get 429 while rate limiting is enabled – also without Redis.
 - **Open.** Any module can add its endpoints in its `di.xml` ([how](docs/endpoints.md)).
 
 ## Installation
@@ -73,7 +73,7 @@ add a rule for it only if you need one.
   ([how](docs/operations.md#counter-store)).
 - Make sure Magento sees the shopper's IP address, not your proxy's – or guests share one counter, or a script
   fakes a new address per request ([how](docs/operations.md#client-ip-address)).
-- Keep a rule in your web server, proxy or CDN as the first line of defence; this module is the second.
+- Keep a rule in your web server, proxy or CDN as the first line of defense; this module is the second.
 
 ## Extending
 

@@ -1,5 +1,7 @@
 # Operations
 
+Running `commercekings/module-rate-limit`. Start with the [README](../README.md).
+
 Two layers, use both where you can: a rule in front of Magento (web server, proxy or CDN) stops a flood before it
 reaches PHP; this module is the second layer, set up in the admin, and the one that knows signed-in customers.
 

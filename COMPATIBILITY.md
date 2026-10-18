@@ -20,5 +20,6 @@ the REST subscribe endpoint answered Magento's 429 after its limit; blocked addr
 also without the counter store; without the counter store, limited endpoints stayed available and nothing was
 logged; normal pages were not affected; the admin table rendered, refused an invalid limit and saved a valid one.
 
-The GitHub workflow checks package metadata, PHP syntax on 8.1–8.5 and Git archive
-contents. Runtime support for other Magento versions remains unverified.
+The GitHub workflow checks package metadata, PHP syntax on 8.2–8.5 and Git archive
+contents. Runtime support for other Magento versions remains unverified. Latest results are available in
+[GitHub Actions](https://github.com/commercekings/module-rate-limit/actions).
