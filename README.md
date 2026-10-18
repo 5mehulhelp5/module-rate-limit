@@ -61,6 +61,7 @@ Suggested limits, filled in for the CommerceKings endpoints that are installed:
 | Notifications: subscribe (`POST /V1/ck-notification/subscriptions`, `/mine`) | 10 | 10 | minute |
 | Consent: record a choice (`/ckconsent/grant`) | 30 | 30 | minute |
 | Consent: record a withdrawal (`/ckconsent/withdraw`) | 30 | 30 | minute |
+| Notifications: Do not contact page (`/cknotification/block`) | 10 | 10 | minute |
 | Abandoned cart: restore link (`/cartreminder/cart/restore`) | 10 | 10 | minute |
 
 The email withdrawal link (`/ckconsent/optout`) has no suggested limit: mail providers send one-click unsubscribes
