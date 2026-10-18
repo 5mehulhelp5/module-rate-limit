@@ -61,20 +61,21 @@ Suggested limits, filled in for the CommerceKings endpoints that are installed:
 |---|---|---|---|
 | Notifications: subscribe (`POST /V1/ck-notification/subscriptions`, `/mine`) | 10 | 10 | minute |
 | Consent: record a choice (`/ckconsent/grant`) | 30 | 30 | minute |
-| Consent: record a withdrawal (`/ckconsent/withdraw`) | 30 | 30 | minute |
-| Notifications: Do not contact page (`/cknotification/block`) | 10 | 10 | minute |
 | Abandoned cart: restore link (`/cartreminder/cart/restore`) | 10 | 10 | minute |
 
-The email withdrawal link (`/ckconsent/optout`) has no suggested limit: mail providers send one-click unsubscribes
-from shared servers (RFC 8058), so a limit per IP address could drop a shopper's unsubscribe. Its links are signed;
-add a rule for it only if you need one.
+Stopping emails has no suggested limit – a refused "no" would keep emails going: the cookie banner's withdrawal
+(`/ckconsent/withdraw`), the email withdrawal link (`/ckconsent/optout`) and the Do not contact page
+(`/cknotification/block`). Mail providers also send one-click unsubscribes from shared servers (RFC 8058), so a
+limit per IP address could drop a shopper's unsubscribe. They are listed in the admin; add a rule only if you need
+one.
 
 ## Before going live
 
 - Add the backpressure logger to `app/etc/env.php` – without it Magento cannot count and only the blocklist works
   ([how](docs/operations.md#counter-store)).
 - Make sure Magento sees the shopper's IP address, not your proxy's – or guests share one counter, or a script
-  fakes a new address per request ([how](docs/operations.md#client-ip-address)).
+  fakes a new address per request. *Status* warns when Magento sees a private or local address
+  ([how](docs/operations.md#client-ip-address)).
 - Keep a rule in your web server, proxy or CDN as the first line of defense; this module is the second.
 
 ## Extending
