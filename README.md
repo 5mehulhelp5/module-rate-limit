@@ -26,10 +26,10 @@ It needs Magento 2.4.7 or later.
 
 ## How it fits in
 
-**Optional, in both directions.** The CommerceKings feature modules (consent, notification, abandoned cart) do not
-require it and contain no rate-limiting code: without it they work the same, on Magento 2.4.4+. It does not require
-them either: it names their endpoints by class name only, and skips an endpoint whose module is not installed – no
-error, the row is just not offered. Installed together, their endpoints are listed automatically.
+**Optional, in both directions.** The CommerceKings feature modules (consent, notification, abandoned cart, the SMS
+provider modules) do not require it and contain no rate-limiting code: without it they work the same, on Magento 2.4.4+.
+It does not require them either: it names their endpoints by class name only, and skips an endpoint whose module is not
+installed – no error, the row is just not offered. Installed together, their endpoints are listed automatically.
 
 **Where the configuration comes from** – only from this module and from Magento, never from the features' settings
 or data (subscriptions, consents):
@@ -63,6 +63,9 @@ Suggested limits, filled in for the CommerceKings endpoints that are installed:
 | Notifications: consent for an address (`POST /V1/ck-notification/address-consents`, `/mine`) | 10 | 10 | minute |
 | Consent: record a choice (`/ckconsent/grant`) | 30 | 30 | minute |
 | Abandoned cart: restore link (`/cartreminder/cart/restore`) | 10 | 10 | minute |
+
+Twilio's delivery status and Infobip's delivery report webhooks are listed when those modules are installed, with no
+suggested limit; their reply webhooks are never listed – a 429 would lose a STOP.
 
 Stopping emails has no suggested limit – a refused "no" would keep emails going: the cookie banner's withdrawal
 (`/ckconsent/withdraw`), the email withdrawal link (`/ckconsent/optout`) and the Do not contact page
