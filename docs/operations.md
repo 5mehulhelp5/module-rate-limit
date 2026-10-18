@@ -48,14 +48,14 @@ on save. Behind a CDN, block at the CDN where you can.
 
 ## In front of Magento
 
-nginx example for the notification subscribe endpoint (keep your usual Magento REST handling in the location):
+nginx example for the notification sign-up and address consent endpoints (keep your usual Magento REST handling in the location):
 
 ```nginx
 # http {}
 limit_req_zone $binary_remote_addr zone=ck_subscribe:10m rate=10r/m;
 
 # server {}
-location ~ ^/rest/[^/]+/V1/ck-notification/subscriptions {
+location ~ ^/rest/[^/]+/V1/ck-notification/(subscriptions|address-consents) {
     limit_req zone=ck_subscribe burst=5 nodelay;
     limit_req_status 429;
     try_files $uri $uri/ /index.php$is_args$args;

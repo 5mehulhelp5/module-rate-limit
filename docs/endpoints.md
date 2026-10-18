@@ -2,7 +2,8 @@
 
 Adding endpoints to `commercekings/module-rate-limit`. Start with the [README](../README.md).
 
-The endpoint registry is open: a module adds its own endpoints in its `etc/di.xml`, and they appear in the admin
+The endpoint registry is open (`@api`: the `definitions` argument of `Model\EndpointRegistry`): a module adds its own
+endpoints in its `etc/di.xml`, and they appear in the admin
 table under **Stores > Configuration > CommerceKings > Rate limiting > Limits**. They then get the same limits per
 guest IP and per customer, the IP blocklist and the HTTP 429 answer as the CommerceKings endpoints.
 
@@ -64,3 +65,41 @@ form post would show the JSON body as the page.
 
 The request type id in Magento's backpressure is `ck-rate-limit/<id>`; Magento's own types (`quote-order`, …) are
 untouched.
+
+## Keep it optional for your module
+
+Classes are matched by name, so your module needs no dependency on this one; suggest it in your `composer.json`:
+
+```json
+"suggest": {
+    "commercekings/module-rate-limit": "Rate limits for the quote request endpoint (Magento 2.4.7+)"
+}
+```
+
+Don't register a webhook that a service calls only once (e.g. an inbound SMS reply): a 429 is not sent again, so
+the message – a STOP, say – would be lost. Protect it with the service's signature instead.
+
+## Handle 429 in your storefront code
+
+Keep the shopper's input and ask them to try again shortly:
+
+```js
+const response = await fetch('/acme_quote/request/send', {method: 'POST', body: data});
+if (response.status === 429) {
+    showMessage('Too many requests – please try again in a minute.');
+    return;
+}
+```
+
+## Check that it works
+
+Set a low limit on your endpoint (e.g. 3 per minute), then send a few requests – the fourth gets 429:
+
+```sh
+for i in 1 2 3 4; do
+  curl -s -o /dev/null -w '%{http_code}\n' -X POST -H 'X-Requested-With: XMLHttpRequest' \
+    https://shop.example/acme_quote/request/send
+done
+```
+
+Without the counter store in `app/etc/env.php` every request passes – the admin *Status* line tells you which.

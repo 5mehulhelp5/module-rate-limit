@@ -81,90 +81,10 @@ one.
 
 ## Extending
 
-Any module can put its endpoints under the same limits: a few lines of `di.xml`, no PHP. The endpoint then appears
-in the admin table and gets the limits, the blocklist and the 429. Rules and details: [endpoints](docs/endpoints.md).
-
-### Register an endpoint
-
-In your module's `etc/di.xml` – a storefront controller, a REST service, or both:
-
-```xml
-<type name="CommerceKings\RateLimit\Model\EndpointRegistry">
-    <arguments>
-        <argument name="definitions" xsi:type="array">
-            <!-- a storefront controller: the action class -->
-            <item name="acme_quote_request" xsi:type="array">
-                <item name="label" xsi:type="string">Quote request: send</item>
-                <item name="controller" xsi:type="string">Acme\QuoteRequest\Controller\Request\Send</item>
-            </item>
-            <!-- a REST service: the class and methods from your webapi.xml -->
-            <item name="acme_stock_alert" xsi:type="array">
-                <item name="label" xsi:type="string">Stock alert: subscribe</item>
-                <item name="service" xsi:type="string">Acme\StockAlert\Api\AlertManagementInterface</item>
-                <item name="methods" xsi:type="array">
-                    <item name="guest" xsi:type="string">subscribeGuest</item>
-                    <item name="customer" xsi:type="string">subscribeCustomer</item>
-                </item>
-            </item>
-        </argument>
-    </arguments>
-</type>
-```
-
-Then **Stores > Configuration > CommerceKings > Rate limiting > Limits > Add limit**, choose *Quote request: send*,
-set the limits and save.
-
-Magento's own endpoints work the same way – list them in a project module. For example the checkout's email check
-(`POST /V1/customers/isEmailAvailable`), which bots use to find out which addresses have an account:
-
-```xml
-<item name="project_email_check" xsi:type="array">
-    <item name="label" xsi:type="string">Checkout: email check</item>
-    <item name="service" xsi:type="string">Magento\Customer\Api\AccountManagementInterface</item>
-    <item name="methods" xsi:type="array">
-        <item name="check" xsi:type="string">isEmailAvailable</item>
-    </item>
-</item>
-```
-
-### Keep it optional for your module
-
-Classes are matched by name, so your module needs no dependency on this one; without it the entry is simply unused.
-Suggest it in your `composer.json`:
-
-```json
-"suggest": {
-    "commercekings/module-rate-limit": "Rate limits for the quote request endpoint (Magento 2.4.7+)"
-}
-```
-
-### Handle 429 in your storefront code
-
-A limited request never reaches your endpoint and gets `429` with `{"message": "Too Many Requests"}`. Treat it as
-temporary – keep the shopper's input and ask them to try again shortly:
-
-```js
-const response = await fetch('/acme_quote/request/send', {method: 'POST', body: data});
-if (response.status === 429) {
-    showMessage('Too many requests – please try again in a minute.');
-    return;
-}
-```
-
-AJAX and REST endpoints suit this best: a classic full-page form post would show the JSON body as the page.
-
-### Check that it works
-
-Set a low limit on your endpoint (e.g. 3 per minute), then send a few requests – the fourth gets 429:
-
-```sh
-for i in 1 2 3 4; do
-  curl -s -o /dev/null -w '%{http_code}\n' -X POST -H 'X-Requested-With: XMLHttpRequest' \
-    https://shop.example/acme_quote/request/send
-done
-```
-
-Without the counter store in `app/etc/env.php` every request passes – the admin *Status* line tells you which.
+Any module can put its endpoints under the same limits with a few lines of `di.xml` and no PHP (the `definitions`
+argument of `Model\EndpointRegistry` is `@api`, a stable extension point). The endpoint then appears in the admin
+table and gets the limits, the blocklist and the 429. How, and how to handle 429 in your storefront code:
+[endpoints](docs/endpoints.md).
 
 ## Limitations
 
